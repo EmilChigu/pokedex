@@ -30,7 +30,7 @@ function SinglePokemon({
           />
         </div>
         <h1 className="font-bold text-3xl text-center">{name}</h1>
-        <div className="flex justify-between my-3">
+        <div className="flex justify-around my-3">
           <div>
             <p>
               <span className="font-semibold">Species</span>: {species.name}
@@ -49,7 +49,7 @@ function SinglePokemon({
           Measurements
         </h5>
 
-        <div className="flex justify-between ">
+        <div className="flex justify-around ">
           <p>
             <span className="font-semibold">Height</span>: {height}
           </p>

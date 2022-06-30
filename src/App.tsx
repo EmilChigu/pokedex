@@ -4,6 +4,7 @@ import SinglePokemon from "./components/SinglePokemon";
 import PokemonNotFound from "./components/PokemonNotFound";
 import Nav from "./components/ui/Nav";
 
+// Interface for pokemon state object
 interface IPokemon {
   name: string;
   height: number;
@@ -17,16 +18,22 @@ interface IPokemon {
 function App() {
   // Name of the pokemon being searched for
   const [name, setName] = useState<string>("");
+  // data for the pokemon that is found.
   const [pokemon, setPokemon] = useState<IPokemon>();
+  // setting an error state if a pokemon is not found / API returns error
   const [notFound, setNotFound] = useState<boolean>(false);
+  // Setting a loading state whilst waiting for async await
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const pokemonName = event.target.value;
+    // API is case sensitive, all URL params must be lowercase
     setName(pokemonName.toLocaleLowerCase());
   };
 
+  // Submitting the form to search for the pokemon
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    // Setting app to a default state before looking for a pokemon
     setLoading(true);
     setNotFound(false);
     setPokemon(undefined);
@@ -37,8 +44,7 @@ function App() {
         `https://pokeapi.co/api/v2/pokemon/${name}`
       );
 
-      console.log(foundPokemon);
-
+      // Setting the pokemon state object to the API response
       setPokemon({
         name: foundPokemon.data.name,
         height: foundPokemon.data.height,
@@ -49,11 +55,13 @@ function App() {
         game_indices: foundPokemon.data.game_indices.length,
       });
 
+      // CLearing form input and stopping loading state
       setName("");
       setNotFound(false);
       setLoading(false);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      // Logging errors if they are found
+      console.log(error.response.data);
       setNotFound(true);
       setPokemon(undefined);
       setLoading(false);
@@ -76,7 +84,7 @@ function App() {
             onChange={handleOnChange}
             placeholder="Search for a pokemon to start"
           />
-
+          {/* Button disabled if input field is empty */}
           <button
             type="submit"
             disabled={name.length <= 0}
@@ -85,6 +93,7 @@ function App() {
             Search
           </button>
         </form>
+        {/* IF applications is in loading state, show a loading message */}
         {loading && (
           <>
             <img
@@ -96,7 +105,9 @@ function App() {
             </h1>
           </>
         )}
+        {/* If there is an error with the API, render the error page */}
         {notFound && <PokemonNotFound />}
+        {/* Render the pokemon page if one is found */}
         {pokemon && <SinglePokemon {...pokemon} />}
       </div>
     </>
